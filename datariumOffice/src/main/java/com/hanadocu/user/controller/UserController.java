@@ -22,8 +22,8 @@ public class UserController {
 		
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, path="/users/{id}")
-	public void getUserDetail(@PathVariable int id) {
+	@RequestMapping(method = RequestMethod.GET, path="/users/{userId}")
+	public void getUserDetail(@PathVariable int userId) {
 		
 	}
 	
@@ -34,13 +34,13 @@ public class UserController {
 		userService.insertUser(user);
 	}
 	
-	@RequestMapping(method = RequestMethod.PUT, path="/users/{id}")
-	public void updateUser(@RequestBody Meeting meeting, @PathVariable int id) {
+	@RequestMapping(method = RequestMethod.PUT, path="/users/{userId}")
+	public void updateUser(@RequestBody User user) {
 		
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE, path="/users/{id}")
-	public void deleteUser(@PathVariable int id) {
+	@RequestMapping(method = RequestMethod.DELETE, path="/users/{userId}")
+	public void deleteUser(@PathVariable int userId) {
 		
 	}
 }
