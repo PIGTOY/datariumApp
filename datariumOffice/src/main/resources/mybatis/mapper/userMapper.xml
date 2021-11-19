@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+   File  Name     : userMapper.xml
+   Description    : 사용자 관리
+   Author         : 김민정
+-->
+<mapper namespace="com.hanadocu.user.mapper.UserMapper">
+
+	<!-- 해당 사용자 정보 -->
+   <select id="getUserInfo" parameterType="String" resultType="User">
+   	SELECT
+   			USER_NO,
+   			ENGLISH_NAME,
+   			JOB_POSITION,
+   			JOB
+	FROM USER_INFO
+	WHERE USER_NO = #{userNo}   			
+   </select>
+   
+   
+
+</mapper>

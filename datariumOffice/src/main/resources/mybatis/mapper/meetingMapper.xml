@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+   File  Name     : meetingMapper.xml
+   Description    : 회의실 관리
+   Author         : 김민정
+-->
+<mapper namespace="com.hanadocu.meeting.mapper.MeetingMapper">
+
+	<!-- 해당 달의 모든 회의 예약 상황 -->
+   <select id="getAllMeeting" parameterType="MeetingDomain" resultType="Meeting">
+   	SELECT
+   			meeting_id,
+   			meeting_room,
+   			meeting_date,
+   			meeting_start_time,
+   			meeting_end_time,
+   			CONCAT(meeting_start_time,'~',meeting_end_time) as meeting_time,
+   			DATE_FORMAT(DATE_SUB(str_to_date(meeting_start_time,"%H:%i"), interval 10 minute), "%H:%i") as meeting_alarm_time,
+   			meeting_subject,
+   			attendee_id,
+   			outside_attendee,
+   			meeting_bigo,
+   			reg_user,
+   			reg_datetime,
+   			update_user,
+   			update_datetime
+   	FROM MEETING
+   	where MEETING_DATE between CONCAT(#{srchYear},#{srchMonth},'01') and REPLACE(LAST_DAY(CONCAT(#{srchYear},#{srchMonth},'01')),'-','')
+   </select>
+   
+   <!-- 회의 상세 정보 -->
+   <select id="getMeetingDetail" parameterType="int" resultType="Meeting">
+   	SELECT 
+   			meeting_id,
+   			meeting_room,
+   			meeting_date,
+   			meeting_start_time,
+   			meeting_end_time,
+   			CONCAT(meeting_start_time,'~',meeting_end_time) as meeting_time,
+   			DATE_FORMAT(DATE_SUB(str_to_date(meeting_start_time,"%H:%i"), interval 10 minute), "%H:%i") as meeting_alarm_time,
+   			meeting_subject,
+   			attendee_id,
+   			outside_attendee,
+   			meeting_bigo,
+   			reg_user,
+   			reg_date_time,
+   			update_user,
+   			update_date_time
+	FROM MEETING
+	WHERE MEETING_ID = #{meetingId}   			
+   </select>
+   
+   <!-- 회의실 사용 여부 체크 -->
+   <select id="getMeetingRoomDupCheck" parameterType="Meeting" resultType="Meeting">
+   	<![CDATA[
+	   	SELECT	
+	   			meeting_subject
+		FROM MEETING m
+		WHERE MEETING_DATE = #{meeting.meetingDate}
+		AND MEETING_ROOM = #{meeting.meetingRoom}
+		AND (MEETING_START_TIME <= #{meeting.meetingStartTime}  AND  #{meeting.meetingStartTime} < MEETING_END_TIME)
+		OR (MEETING_START_TIME < #{meeting.meetingEndTime}  AND  #{meeting.meetingEndTime} <= MEETING_END_TIME)
+	]]> 
+   </select>
+   
+   <!-- 해당 회의 참석자 리스트 -->
+   <select id="getAttendeeForMeeting" parameterType="int" resultType="Attendee">
+   	SELECT a.ATTENDEE_ID, a.USER_NO 
+	FROM MEETING m 
+	INNER JOIN ATTENDEE a on m.ATTENDEE_ID  = a.ATTENDEE_ID 
+	WHERE m.MEETING_ID = #{meetingId}
+   </select>
+   
+   <!-- 회의 등록 -->
+   <insert id="insertMeeting" parameterType="Meeting">
+   	INSERT INTO MEETING (
+		MEETING_ROOM, 
+		MEETING_DATE,
+		MEETING_START_TIME, 
+		MEETING_END_TIME, 
+		MEETING_SUBJECT, 
+		ATTENDEE_ID,
+		OUTSIDE_ATTENDEE,
+		MEETING_BIGO,
+		REG_USER,
+		REG_DATETIME
+	)
+	VALUES (
+		#{meeting.meetingRoom}, 
+		#{meeting.meetingDate}, 
+		#{meeting.meetingStartTime}, 
+		#{meeting.meetingEndTime}, 
+		#{meeting.meetingSubject}, 
+		#{meeting.attendeeId},
+		#{meeting.outsideAttendee},
+		#{meeting.meetingBigo},
+		#{meeting.regUser},
+		NOW()
+	)
+
+   </insert>
+   
+   <!-- 회의 삭제 -->
+   <update id="updateMeeting" parameterType="Meeting">
+   	UPDATE MEETING
+   	SET
+   		MEETING_ROOM = #{meeting.meetingRoom},
+   		MEETING_DATE = #{meeting.meetingDate},
+   		MEETING_START_TIME = #{meeting.meetingStartTime},
+   		MEETING_END_TIME = #{meeting.meetingEndTime},
+   		MEETING_SUBJECT = #{meeting.meetingSubject},
+   		ATTENDEE_ID = #{meeting.attendeeId},
+		OUTSIDE_ATTENDEE = #{meeting.outsideAttendee},
+		MEETING_BIGO = #{meeting.meetingBigo},
+		UPDATE_USER = #{meeting.updateUser},
+		UPDATE_DATETIME = NOW()
+	WHERE MEETING_ID = #{meeting.meetingId}   		
+   </update>
+   
+   <delete id="deleteMeeting" parameterType="int">
+   	DELETE FROM MEETING
+   	WHERE MEETING_ID = #{meetingId}
+   </delete>
+   
+   <!-- 참석자 ID 가져오기 -->
+   <select id="getAttendeeId" resultType="int">
+   	SELECT MAX(NVL(ATTENDEE_ID,0))+1
+   	FROM ATTENDEE
+   </select>
+   
+   <!-- 참석자 등록 -->
+   <insert id="insertAttendee" parameterType="Attendee">
+   	INSERT INTO ATTENDEE (
+   		ATTENDEE_ID,
+   		USER_NO
+   	) VALUES (
+   		#{attendee.attendeeId},
+   		#{attendee.userNo}
+   	)
+   </insert>
+   
+   <!-- 참석자 삭제 -->
+   <delete id="deleteAttendee" parameterType="int">
+   	DELETE FROM ATTENDEE
+   	WHERE ATTENDEE_ID = #{attendeeId} 
+   </delete>
+
+</mapper>

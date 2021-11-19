@@ -1,0 +1,53 @@
+server:  port: 80
+
+spring:   profiles:    active:    - local  datasource:    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy     username: datarium
+    password: Wjswkghk1!@#
+    hikari:      jdbc-url: jdbc:log4jdbc:mariadb://localhost:3306/datariumOffice
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      connection-init-sql: SELECT 1
+      validation-timeout: 5000
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      
+
+
+mybatis:  type-aliases-package: com.hanadocu.**.domain  mapper-locations:  - classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/config/mybatis-config.xml
+
+password:
+  fail-count: 5
+  update-days: 90
+  last-login-days: 90
+
+#logging config
+#logging:
+#  config: classpath:logback-spring.xml
+
+xss:
+  acceptUrls :
+    /cm/menu/menusave,
+    /cm/menu/menuupdt,
+    /cm/authority/authoritysave,
+    /cm/authority/authorityupdt,
+    /cm/code/registcodegroup,
+    /cm/code/updtcodegroup,
+    /cm/notice/registnotice,
+    /cm/notice/updatenotice,
+    /cm/qna/registqna,
+    /cm/qna/updateupdateqna
+    /cm/usestplt/updateusestplt,
+    /cm/usestplt/registusestplt,
+    /cm/indvdlinfo/registindvdlinfo,
+    /cm/indvdlinfo/updateindvdlinfo,
+    /cm/faq/registfaq,
+    /cm/faq/updatefaq,
+    /ct/qna/registqna,
+    /ct/qna/updateqna,
+    /ct/adbk/indvdladbk,
+    /ct/guidance/registguidance,
+    /ct/guidance/updateguidance
+
+company:
+  code: ti
