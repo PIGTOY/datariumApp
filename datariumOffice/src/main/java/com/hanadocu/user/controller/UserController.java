@@ -43,6 +43,12 @@ public class UserController {
 	public void deleteUser(@PathVariable int userId) {
 		
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, path="/auth/kakao/callback")
+	public String kakaoCallback(@PathVariable String code) {
+		
+		return "카카오 인증 완료";
+	}
 }
 
 
